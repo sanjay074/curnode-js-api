@@ -12,6 +12,8 @@ const userRoute = require('./auth/routes/googleRoute');
 require('./auth/controllers/passport')(passport);
 // Email $ phone login 
 const usersRoute = require('./auth/routes/userRoutes');
+const hospitalRoutes = require('./hospital/routes/hospital');
+const doctorRouter = require('./pharmcay/routes/doctorRouter');
 //Db
 mongoose.connect("mongodb://localhost:27017/curaster", {
   useNewUrlParser: "true",
@@ -24,5 +26,7 @@ mongoose.connection.on("connected", (err, res) => {
 }) 
 app.use('/login', userRoute);
 app.use('/api',usersRoute);
-const PORT = process.env.PORT || 3000 
+app.use('/api',hospitalRoutes);
+app.use('/api',doctorRouter);
+const PORT = process.env.PORT || 3000
 app.listen(PORT, () => console.log('Server is running on: ' + PORT));

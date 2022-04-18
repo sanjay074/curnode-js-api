@@ -1,5 +1,6 @@
 const Joi =require ("joi");
 const Hospital = require('../models/hospital');
+const Services = require('../models/services');
 exports.addHospital = async(req,res)=>{
   let {HospitalName,hospitalLocation,latitude,longitude,alldoctors,Allbeds,Ambulances,TotalBeds, Vacant }= req.body 
   const hospitalSchema = Joi.object({
@@ -78,4 +79,39 @@ exports.updated =async(req ,res)=>{
     }catch(err){
      res.status(500).json(err)   
     }
-}
+} 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns json
+ * @description addHospitalServices  API & findHospitalServices
+ * @date 18/04/2022
+ * @author Sanjay kuamr
+ */  
+
+ exports.addservices = async(req,res)=>{
+    const newServices = await new Services(req.body);
+    try{
+     const saveServices = await newServices.save();
+     res.status(200).json(saveServices);
+    }catch(err){
+        res.status(500).json(err);
+    }
+} 
+exports.allfindServices = async (req ,res)=>{
+    try{
+        const SeervicesFind = await Services.find();
+        res.status(200).json(SeervicesFind);
+        }catch(err){
+            res.status(500).json(err)
+        }
+    }  
+exports.findOneServices = async(req ,res)=>{
+    try{
+    const ServicesFind = await Services.findById(req.params.id);
+     res.status(200).json(ServicesFind);
+    }catch(err){
+        res.status(500).json(err)
+    }
+}  

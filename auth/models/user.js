@@ -23,6 +23,11 @@ const userSchema = new Schema({
     referralCode:{
         type:String
     },
-    verified:Boolean
+    verified:Boolean,
+    roles:{
+        type: [String],
+        enum:["user",'admin'],
+        default:["user"]
+        },
 });
 module.exports = mongoose.model('User', userSchema);

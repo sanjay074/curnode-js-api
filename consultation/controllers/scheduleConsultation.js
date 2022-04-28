@@ -4,7 +4,8 @@ const Physician = require('../../physicians/models/physicians');
 const { ObjectId } = require('mongodb')
 const { exec } = require('child_process');
 // const _ = require('lodash');
-const Joi = require('joi');
+const Joi = require('joi'); 
+//Created By Sanjay Kumar createScheduleList @15/04/2022
 exports.createScheduleList = async (req, res) => {
     try {
         const data = req.body;
@@ -60,6 +61,15 @@ exports.createScheduleList = async (req, res) => {
     }
 };
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns json
+ * @description  getAvailableSloatAPI
+ * @date 13/04/2022
+ * @author Sanjay kuamr
+ */  
 exports.getAvailableSlot = async (req, res) => {
     try {
         const dateList = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
@@ -92,6 +102,7 @@ exports.getAvailableSlot = async (req, res) => {
         // const sechedule = await scheduleList.findOne(filterQuery).lean();
         // const sechedule = await scheduleList.findOne (filterQuery).lean();filterQuery");
         // const sechedule =
+        // const
         const sechedule = await ScheduleList.aggregate([
             {
                 $project: {
@@ -175,6 +186,15 @@ function getSlots(start, end, slotTime) { // This function return the slot data
     }
     return allSlots;
 }
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns json
+ * @description addSchedule
+ * @date 18/04/2022
+ * @author Sanjay kuamr
+ */  
 exports.addSchedule = async (req, res, next) => {
 
     //let comment = {text:req.body.comment};
@@ -242,6 +262,15 @@ exports.addSchedule = async (req, res, next) => {
         });
 
 }
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns json
+ * @description getAllSchedule api
+ * @date 18/04/2022
+ * @author Sanjay kuamr
+ */  
 exports.getAllSchedule = async (req, res, next) => {
 
     if (req.body.physicianId == undefined ) { //|| req.body.bookingType == undefined
@@ -261,7 +290,6 @@ exports.getAllSchedule = async (req, res, next) => {
             data: items.filter((x) => x.parentMedicalId == req.body.parentMedicalId && x.bookingType == req.body.bookingType)
         })
     })
-
     // .exec((err, posts) => {
     //     if (err) {
     //         return res.status(400).json({

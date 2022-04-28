@@ -1,8 +1,12 @@
 const Joi = require('joi');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const generateTokens = require("../../utils/generateTokens");
 const UserOTPVerification = require('../models/UserOTPVerification');
 const nodemailer = require("nodemailer");
 const  bcrypt =require('bcrypt');
+const verifyRefreshToken =require("../../utils/verifyRefreshToken");
+const UserToken = require("../../auth/models/UserToken");
 // nodemailer 
 var transporter = nodemailer.createTransport({
   host:'smtp.gmail.com',
@@ -79,7 +83,14 @@ exports.userlogin = async(req ,res)=>{
     if (!match) {
       res.status(401).json("Wrong credentials");
     }
-    res.status(200).json(user)
+    const {accessToken,refreshToken} = await generateTokens(User);
+    res.status(200).json({
+      error:false,
+      accessToken,
+      refreshToken,
+      messsage:"Logged in sucessfully",
+    })
+    
   }catch(err){
     res.status(500).json(err)
 }
@@ -225,4 +236,40 @@ exports.findOne = async(req,res)=>{
   }catch(err){
       res.status(500).json(err);
   }
+}
+exports.verifyRefreshTokens =async (req ,res)=>{
+  //  verifyRefreshToken(req.body.refreshToken)
+   try{
+     verifyRefreshToken(req.body.refreshToken)
+    .then(({tokenDetails})=>{
+      const payload = {_id:tokenDetails._id,roles:tokenDetails.roles};
+      const accessToken = jwt.sign(
+        payload,
+        process.env.ACCESS_TOKEN_PRIVATE_KEY,
+        {expiresIn:"14m"}
+      );
+      res.status(200).json({
+        error:false,
+        accessToken,
+        message:"Access token created successfully",
+      })
+    })
+   }catch(err){
+    res.status(500).json({error:true , message:"Internal server Error"});
+   }
+}  
+
+// logout 
+exports.loggeduser= async (req,res)=>{
+   try{
+    const userToken = await UserToken.findOne({token:req.body.refreshToken});
+    if(!userToken)
+    return res.status(200)
+    .json({error:false,message:"Logged Out Sucessfully"});
+    await userToken.remove();
+    res.status(200).json({error:false,message:"Logged Out Sucessfully"});
+   }catch(err){
+     console.log(err);
+     res.status(500).json({error:true , message:"Internal sERVER Error"});
+   }
 }

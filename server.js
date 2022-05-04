@@ -16,15 +16,17 @@ const hospitalRoutes = require('./hospital/routes/hospital');
 const physicians = require('./physicians/routes/physicians');
 const controllers = require('./consultation/routes/schedule');
 //Db
-mongoose.connect("mongodb://localhost:27017/curaster", {
-  useNewUrlParser: "true",
-})
-mongoose.connection.on("error", err => {
-  console.log("err", err)
-})
-mongoose.connection.on("connected", (err, res) => {
-  console.log("mongoose is connected")
-}) 
+async function main() {
+  try {
+    await mongoose.connect(
+      "mongodb+srv://userProfiles:MoBohTt3PGtlsyCy@cluster0.nx0ry.mongodb.net/eHospiDatabase?retryWrites=true&w=majority"
+    );
+    console.log("Database connected sucessfully");
+  } catch (error) {
+    console.log(error);
+  }
+}
+main();
 app.use('/login', userRoute);
 app.use('/api',usersRoute);
 app.use('/api',hospitalRoutes);
